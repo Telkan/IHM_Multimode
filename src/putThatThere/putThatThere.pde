@@ -3,10 +3,16 @@ import java.awt.Point;
 // data
 ArrayList<Forme> formes;
 Ivy bus;
-Order order;
+OrderDraw order;
 
 FSM mae;
-
+//SRA decryption key 
+private int ACTION      = 0;
+private int WHERE      = 1;
+private int FORM      = 2;
+private int COLOR      = 3;
+private int LOCALISATION  = 4;
+private int CONFIDENCE    = 5;
 
 
 void setup()
@@ -45,8 +51,9 @@ void mousePressed()
 
 void displayAll(){
 	background(255);
-	for(Forme current: formes)
+	for(Forme current: formes){
 		current.update();
+	}
 }
 
 void setupIvy(){
@@ -79,7 +86,7 @@ IvyMessageListener newMsgFromSra =	new IvyMessageListener()
 				case "CREATE":
 					mae = FSM.DRAW;
 					order = new OrderDraw(args);
-
+					order.debugPrint();
 					break;
 				case "MOVE":
 					mae=FSM.MOVE;
@@ -94,7 +101,11 @@ IvyMessageListener newMsgFromSra =	new IvyMessageListener()
 					break;
 			}
 			break;
-		case DRAW:
+		
+    	case DRAW:
+			if(!args[COLOR].equals("undefined"))
+				order.setColor(args[COLOR]);
+			order.debugPrint();
 			break;
 		case MOVE:
 			break;

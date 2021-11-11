@@ -1,4 +1,4 @@
-public class OrderDraw extends Order{
+public class OrderDraw{
     Point center;
     String shape;
     color c;
@@ -12,8 +12,19 @@ public class OrderDraw extends Order{
     private int CONFIDENCE		= 5;
 
     public OrderDraw(String[] argsFromSra){
-        this.shape = argsFromSra[FORM]);
-        switch (argsFromSra[COLOR]){
+        this.shape = argsFromSra[FORM];
+        this.setColor(argsFromSra[COLOR]);
+        if(argsFromSra[LOCALISATION].length()>1){
+            this.center = new Point(mouseX,mouseY);
+        }
+    }
+
+    public void debugPrint(){
+        println("Shape : " + this.shape + " Center : " + this.center.toString() + " Color : " + hex(this.c) );
+    }
+
+    public void setColor(String newColor){
+        switch (newColor){
             case "RED":
                 this.c = color(255, 0, 0); break;
             case "ORANGE":
