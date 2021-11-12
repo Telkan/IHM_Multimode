@@ -4,6 +4,11 @@ public class OrderDraw{
     color c;
 
     public OrderDraw(String form, String colour, String loc){
+        //Default values
+        this.c = color(180, 180, 180);
+        this.shape = "RECTANGLE";
+        this.center = new Point(width/2,height/2);
+        //Parameters values
         this.shape = form;
         this.setColor(colour);
         this.setPosition(loc);
@@ -11,10 +16,10 @@ public class OrderDraw{
 
     public void debugPrint(){
         print("Shape :");
-        if(this.shape != null)
+        //if(this.shape != null)
             print(this.shape);
-        else 
-            print("undefined");
+        //else 
+        //    print("undefined");
         
         print( "Center :");
         if(this.center != null)
@@ -66,15 +71,59 @@ public class OrderDraw{
         Forme newForm;
         switch(this.shape){
             case "RECTANGLE":
+                newForm = new Rectangle(this.center);
+                newForm.setColor(this.c);
+                break;
+            case "TRIANGLE":
+                newForm = new Triangle(this.center);
+                newForm.setColor(this.c);
+                break;
+            case "CIRCLE":
+                newForm = new Cercle(this.center);
+                newForm.setColor(this.c);
+                break;
+            case "DIAMOND":
+                newForm = new Losange(this.center);
+                newForm.setColor(this.c);
+                break;
             default:
                 newForm = new Rectangle(this.center);
                 newForm.setColor(this.c);
                 break;
+
         }
         return newForm;
+        
     }
 
     public void createPreview(){
+        //Create a form and display it in the angle, the form is not saved
+        Forme newForm;
+        Point previewPoint = new Point(width - 100,height - 200);
+        switch(this.shape){
+            case "RECTANGLE":
+                newForm = new Rectangle(previewPoint);
+                newForm.setColor(this.c);
+                break;
+            case "TRIANGLE":
+                newForm = new Triangle(previewPoint);
+                newForm.setColor(this.c);
+                break;
+            case "CIRCLE":
+                newForm = new Cercle(previewPoint);
+                newForm.setColor(this.c);
+                break;
+            case "DIAMOND":
+                newForm = new Losange(previewPoint);
+                newForm.setColor(this.c);
+                break;
+            default:
+                newForm = new Rectangle(previewPoint);
+                newForm.setColor(this.c);
+                break;
+        }
+        newForm.update();
+        circle((float)this.center.getX(), (float)this.center.getY(), 10.);
 
     }
 }

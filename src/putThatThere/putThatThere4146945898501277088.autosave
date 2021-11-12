@@ -33,9 +33,8 @@ void draw()
 			break;
 		case DRAW:
 			displayAll();
-			if(order != null){
-  			order.createPreview();
-      }
+      print(order);
+			order.createPreview();
 			break;
 		case MOVE:
       		mae=FSM.WAIT_FOR_ORDER;
@@ -49,7 +48,10 @@ void draw()
 	}
 }
 
-
+void mousePressed()
+{
+	
+}
 
 
 void displayAll(){
@@ -92,7 +94,7 @@ IvyMessageListener newMsgFromSra =	new IvyMessageListener()
 				case "CREATE":
 					mae = FSM.DRAW;
 					order = new OrderDraw(args[FORM],args[COLOR],args[LOCALISATION]);
-					//order.debugPrint();
+					order.debugPrint();
 					break;
 				case "MOVE":
 					mae=FSM.MOVE;
@@ -109,14 +111,7 @@ IvyMessageListener newMsgFromSra =	new IvyMessageListener()
 			break;
 		
     case DRAW:
-      if (args[ACTION].equals("QUIT"))
-        exit();
-      if (args[ACTION].equals("CONFIRM")){
-        formes.add(order.createForme());
-        mae=FSM.WAIT_FOR_ORDER;
-        break;
-      }
-      order.setColor(args[COLOR]);
+			order.setColor(args[COLOR]);
 			order.setPosition(args[LOCALISATION]);
 			order.setForm(args[FORM]);
 			order.debugPrint();
@@ -130,10 +125,3 @@ IvyMessageListener newMsgFromSra =	new IvyMessageListener()
 		}
 	}		
 };
-
-
-
-void mousePressed()
-{
-  
-}
