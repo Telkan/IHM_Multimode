@@ -10,7 +10,20 @@ public class OrderDraw{
     }
 
     public void debugPrint(){
-        println("Shape : " + this.shape + " Center : " + this.center.toString() + " Color : " + hex(this.c) );
+        print("Shape :");
+        if(this.shape != null)
+            print(this.shape);
+        else 
+            print("undefined");
+        
+        print( "Center :");
+        if(this.center != null)
+            print(this.center.toString());
+        else
+            print("undefined");
+
+        print(hex(this.c));
+        println();
     }
 
     public void setColor(String newColor){
@@ -59,5 +72,9 @@ public class OrderDraw{
                 break;
         }
         return newForm;
+    }
+
+    public void createPreview(){
+
     }
 }

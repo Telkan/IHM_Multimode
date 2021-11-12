@@ -4,7 +4,7 @@ import java.awt.Point;
 ArrayList<Forme> formes;
 Ivy bus;
 OrderDraw order;
-
+float confidenceThreshold =  0.75;
 FSM mae;
 //SRA decryption key 
 private int ACTION      = 0;
@@ -65,7 +65,7 @@ void setupIvy(){
 	{
 		bus = new Ivy("multimod", " Ready to draw some things!", null);
 		bus.start("127.255.255.255:2010");
-		bus.bindMsg("^sra5 Parsed=action=(.*) where=(.*) form=(.*) color=(.*) localisation=(.*) Confidence=(.*) ", newMsgFromSra);
+		bus.bindMsg("^sra5 Parsed=action=(.*) where=(.*) form=(.*) color=(.*) localisation=(.*) Confidence=(.*) NP=(.*)", newMsgFromSra);
 	
 	}
 	catch (IvyException ie)
@@ -81,8 +81,11 @@ IvyMessageListener newMsgFromSra =	new IvyMessageListener()
 {
 	public void receive(IvyClient client,String[] args)
 	//Called at each new message from sra 
-	{
-		switch (mae) {
+	{  
+    if(Float.parseFloat(args[CONFIDENCE].replace(',','.')) <= confidenceThreshold)
+        return;
+		
+    switch (mae) {
 		case WAIT_FOR_ORDER:
 			//Choose an action and start filling up an order
 			switch (args[ACTION]) {
@@ -110,7 +113,6 @@ IvyMessageListener newMsgFromSra =	new IvyMessageListener()
 			order.setPosition(args[LOCALISATION]);
 			order.setForm(args[FORM]);
 			order.debugPrint();
-			formes.add(order.createForme());
 			break;
 		case MOVE:
 			break;
@@ -118,6 +120,6 @@ IvyMessageListener newMsgFromSra =	new IvyMessageListener()
 			break;
 		default :
 			break;
-	}
+		}
 	}		
 };
