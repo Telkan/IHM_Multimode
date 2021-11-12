@@ -32,13 +32,10 @@ void draw()
 			displayAll();
 			break;
 		case DRAW:
-			displayAll();
 			break;
 		case MOVE:
-      		mae=FSM.WAIT_FOR_ORDER;
 			break;
 		case DELETE:
-      		mae=FSM.WAIT_FOR_ORDER;
 			break;
 		default :
 			mae = FSM.WAIT_FOR_ORDER;	

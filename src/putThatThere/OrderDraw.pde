@@ -3,20 +3,10 @@ public class OrderDraw{
     String shape;
     color c;
 
-    //SRA decryption key 
-    private int ACTION			= 0;
-    private int WHERE			= 1;
-    private int FORM			= 2;
-    private int COLOR			= 3;
-    private int LOCALISATION	= 4;
-    private int CONFIDENCE		= 5;
-
-    public OrderDraw(String[] argsFromSra){
-        this.shape = argsFromSra[FORM];
-        this.setColor(argsFromSra[COLOR]);
-        if(argsFromSra[LOCALISATION].length()>1){
-            this.center = new Point(mouseX,mouseY);
-        }
+    public OrderDraw(String form, String colour, String loc){
+        this.shape = form;
+        this.setColor(colour);
+        this.setPosition(loc);
     }
 
     public void debugPrint(){
@@ -24,24 +14,50 @@ public class OrderDraw{
     }
 
     public void setColor(String newColor){
-        switch (newColor){
-            case "RED":
-                this.c = color(255, 0, 0); break;
-            case "ORANGE":
-                this.c = color(255, 150, 0); break;
-            case "YELLOW":
-                this.c = color(255, 255, 0); break;
-            case "GREEN":
-                this.c = color(0, 255, 0); break;
-            case "BLUE":
-                this.c = color(0, 0, 255); break;
-            case "PURPLE":
-                this.c = color(255, 0, 255); break;
-            case "DARK":
-                this.c = color(10, 10, 10); break;
-            default : 
-                this.c = color(180, 180, 180); break;
-            
+        if(!newColor.equals("undefined")){
+            switch (newColor){
+                case "RED":
+                    this.c = color(255, 0, 0); break;
+                case "ORANGE":
+                    this.c = color(255, 150, 0); break;
+                case "YELLOW":
+                    this.c = color(255, 255, 0); break;
+                case "GREEN":
+                    this.c = color(0, 255, 0); break;
+                case "BLUE":
+                    this.c = color(0, 0, 255); break;
+                case "PURPLE":
+                    this.c = color(255, 0, 255); break;
+                case "DARK":
+                    this.c = color(10, 10, 10); break;
+                default : 
+                    this.c = color(180, 180, 180); break;
+                
+            }
         }
+    }
+
+    public void setPosition(String setupPos){
+        if(!setupPos.equals("undefined")){
+            this.center = new Point(mouseX,mouseY);
+        }
+    }
+
+    public void setForm(String form){
+        if(!form.equals("undefined")){
+            this.shape = form;
+        }
+    }
+
+    public Forme createForme(){
+        Forme newForm;
+        switch(this.shape){
+            case "RECTANGLE":
+            default:
+                newForm = new Rectangle(this.center);
+                newForm.setColor(this.c);
+                break;
+        }
+        return newForm;
     }
 }

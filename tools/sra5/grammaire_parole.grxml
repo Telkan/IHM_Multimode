@@ -39,6 +39,11 @@
 			<item> quitter <tag> out = "QUIT" </tag></item>
 			<item> sortir <tag> out = "QUIT" </tag></item>
 			<item> arrêter <tag> out = "QUIT" </tag></item>
+
+			<item> ok <tag> out = "CONFIRM" </tag></item>
+			<item> okay <tag> out = "CONFIRM" </tag></item>
+			<item> d accord <tag> out = "CONFIRM" </tag></item>
+			<item> confirmer <tag> out = "CONFIRM" </tag></item>
 		</one-of>
 	</rule>
 
