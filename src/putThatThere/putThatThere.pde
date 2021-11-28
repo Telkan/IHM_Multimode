@@ -16,6 +16,8 @@ private int CONFIDENCE		= 5;
 
 int formSelected = -1;
 
+
+
 void setup()
 {
 	size(800,800);
@@ -24,6 +26,9 @@ void setup()
 	formes = new ArrayList<Forme>();
 	mae = FSM.WAIT_FOR_ORDER;
 	setupIvy();
+	
+	
+
 }
 
 void draw()
