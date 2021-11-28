@@ -224,6 +224,14 @@ void mousePressed()
 			order.setPosition(new Point(mouseX,mouseY));
 			break;
 		case MOVE:
+			if(formSelected == -1){
+				formSelected = getFormClicked();		
+			}
+			else{
+				formes.get(formSelected).setLocation(new Point(mouseX,mouseY));
+				formSelected = -1;
+				mae = FSM.WAIT_FOR_ORDER;
+			}
 			break;
 		case DELETE:
 			formSelected = getFormClicked();
