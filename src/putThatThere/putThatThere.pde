@@ -99,7 +99,13 @@ IvyMessageListener newVoiceCmd = new IvyMessageListener()
 					mae=FSM.MOVE;
 					break;
 				case "DELETE":
-					mae=FSM.DELETE;
+					if(formSelected != -1){
+						formes.remove(formSelected);
+						formSelected = -1;
+					}
+					else{
+						mae=FSM.DELETE;
+					}
 					break;
 				case "QUIT":
 					exit();
@@ -207,8 +213,8 @@ void mousePressed()
 					break;
 				}
 				else{
-					//on fait un mouvement
-					//TODO mae MOVE
+					formes.get(formSelected).setLocation(new Point(mouseX,mouseY));
+					formSelected = -1;
 				}
 
 			}
@@ -220,6 +226,12 @@ void mousePressed()
 		case MOVE:
 			break;
 		case DELETE:
+			formSelected = getFormClicked();
+			if(formSelected != -1){
+				formes.remove(formSelected);
+				formSelected = -1;
+				mae = FSM.WAIT_FOR_ORDER;
+			}
 			break;
 		default :
 			break;
