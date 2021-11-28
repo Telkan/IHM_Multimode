@@ -136,13 +136,39 @@ IvyMessageListener newDrawCmd = new IvyMessageListener()
 	public void receive(IvyClient client,String[] args)
 	//Called at each new message from ICAR
 	{  
-
+		switch(mae){
+			case WAIT_FOR_ORDER:
+				mae = mae.DRAW;
+				order = new OrderDraw(args[0],"undefined","undefined");
+				break;
+			case DRAW:
+				order.setForm(args[0]);
+				break;
+			case MOVE:
+				break;
+			case DELETE:
+				break;
+			default :
+				break;
+		}
 	}
-}
+};
 
 
 
 void mousePressed()
 {
-  
+	switch(mae){
+		case WAIT_FOR_ORDER:
+			break;
+		case DRAW:
+			order.setPosition(new Point(mouseX,mouseY));
+			break;
+		case MOVE:
+			break;
+		case DELETE:
+			break;
+		default :
+			break;
+	}
 }

@@ -60,6 +60,9 @@ public class OrderDraw{
             this.center = new Point(mouseX,mouseY);
         }
     }
+    public void setPosition(Point posPoint){
+            this.center = posPoint;
+    }
 
     public void setForm(String form){
         if(!form.equals("undefined")){
