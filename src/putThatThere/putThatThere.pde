@@ -65,8 +65,8 @@ void setupIvy(){
 	{
 		bus = new Ivy("multimod", " Ready to draw some things!", null);
 		bus.start("127.255.255.255:2010");
-		bus.bindMsg("^sra5 Parsed=action=(.*) where=(.*) form=(.*) color=(.*) localisation=(.*) Confidence=(.*) NP=(.*)", newMsgFromSra);
-	
+		bus.bindMsg("^sra5 Parsed=action=(.*) where=(.*) form=(.*) color=(.*) localisation=(.*) Confidence=(.*) NP=(.*)", newVoiceCmd);
+		bus.bindMsg("ICAR Gesture=(.*)",newDrawCmd);
 	}
 	catch (IvyException ie)
 	{
@@ -77,7 +77,7 @@ void setupIvy(){
 
 
 
-IvyMessageListener newMsgFromSra =	new IvyMessageListener()
+IvyMessageListener newVoiceCmd = new IvyMessageListener()
 {
 	public void receive(IvyClient client,String[] args)
 	//Called at each new message from sra 
@@ -130,6 +130,15 @@ IvyMessageListener newMsgFromSra =	new IvyMessageListener()
 		}
 	}		
 };
+
+IvyMessageListener newDrawCmd = new IvyMessageListener()
+{
+	public void receive(IvyClient client,String[] args)
+	//Called at each new message from ICAR
+	{  
+
+	}
+}
 
 
 
