@@ -7,19 +7,20 @@ OrderDraw order;
 float confidenceThreshold =  0.6;
 FSM mae;
 //SRA decryption key 
-private int ACTION      = 0;
-private int WHERE      = 1;
-private int FORM      = 2;
-private int COLOR      = 3;
-private int LOCALISATION  = 4;
-private int CONFIDENCE    = 5;
+private int ACTION			= 0;
+private int WHERE			= 1;
+private int FORM			= 2;
+private int COLOR			= 3;
+private int LOCALISATION	= 4;
+private int CONFIDENCE		= 5;
 
+int formSelected = -1;
 
 void setup()
 {
 	size(800,800);
 	surface.setResizable(true);
-  background(255);
+	background(255);
 	formes = new ArrayList<Forme>();
 	mae = FSM.WAIT_FOR_ORDER;
 	setupIvy();
@@ -34,14 +35,14 @@ void draw()
 		case DRAW:
 			displayAll();
 			if(order != null){
-  			order.createPreview();
-      }
+				order.createPreview();
+			}
 			break;
 		case MOVE:
-      		mae=FSM.WAIT_FOR_ORDER;
+			mae=FSM.WAIT_FOR_ORDER;
 			break;
 		case DELETE:
-      		mae=FSM.WAIT_FOR_ORDER;
+			mae=FSM.WAIT_FOR_ORDER;
 			break;
 		default :
 			mae = FSM.WAIT_FOR_ORDER;	
@@ -54,9 +55,12 @@ void draw()
 
 void displayAll(){
 	background(255);
-	for(Forme current: formes){
-		current.update();
+	int i = 0;
+	while(i < formes.size()){
+		formes.get(i).update();
+		i++;
 	}
+
 }
 
 void setupIvy(){
@@ -74,18 +78,15 @@ void setupIvy(){
 }
 
 
-
-
-
 IvyMessageListener newVoiceCmd = new IvyMessageListener()
 {
 	public void receive(IvyClient client,String[] args)
 	//Called at each new message from sra 
 	{  
-    if(Float.parseFloat(args[CONFIDENCE].replace(',','.')) <= confidenceThreshold)
-        return;
+	if(Float.parseFloat(args[CONFIDENCE].replace(',','.')) <= confidenceThreshold)
+		return;
 		
-    switch (mae) {
+	switch (mae) {
 		case WAIT_FOR_ORDER:
 			//Choose an action and start filling up an order
 			switch (args[ACTION]) {
@@ -108,19 +109,20 @@ IvyMessageListener newVoiceCmd = new IvyMessageListener()
 			}
 			break;
 		
-    case DRAW:
-      if (args[ACTION].equals("QUIT"))
-        exit();
-      if (args[ACTION].equals("CONFIRM")){
-        formes.add(order.createForme());
-        mae=FSM.WAIT_FOR_ORDER;
-        break;
-      }
-      order.setColor(args[COLOR]);
+		case DRAW:
+			if (args[ACTION].equals("QUIT"))
+				exit();
+			if (args[ACTION].equals("CONFIRM")){
+				formes.add(order.createForme());
+				mae=FSM.WAIT_FOR_ORDER;
+				break;
+			}
+			order.setColor(args[COLOR]);
 			order.setPosition(args[LOCALISATION]);
 			order.setForm(args[FORM]);
 			order.debugPrint();
 			break;
+		
 		case MOVE:
 			break;
 		case DELETE:
@@ -138,9 +140,18 @@ IvyMessageListener newDrawCmd = new IvyMessageListener()
 	{  
 		switch(mae){
 			case WAIT_FOR_ORDER:
-				mae = mae.DRAW;
-				order = new OrderDraw(args[0],"undefined","undefined");
+				
+				if(args[0].equals("YELLOW") || args[0].equals("GREEN") || args[0].equals("DARK") ||args[0].equals("BLUE") ||args[0].equals("RED") ||args[0].equals("ORANGE") ||args[0].equals("PURPLE")){
+					order = new OrderDraw("undefined",args[0],"undefined");
+					mae = mae.DRAW;
+				}
+				else if (!args[0].equals("CONFIRM")){
+					order = new OrderDraw(args[0],"undefined","undefined");
+					mae = mae.DRAW;
+				}
 				break;
+
+
 			case DRAW:
 				if(args[0].equals("CONFIRM")){
 					formes.add(order.createForme());
@@ -153,10 +164,13 @@ IvyMessageListener newDrawCmd = new IvyMessageListener()
 				}
 				order.setForm(args[0]);
 				break;
+
 			case MOVE:
 				break;
+
 			case DELETE:
 				break;
+
 			default :
 				break;
 		}
@@ -164,12 +178,42 @@ IvyMessageListener newDrawCmd = new IvyMessageListener()
 };
 
 
+int getFormClicked()
+{
+	int foundForm =-1;
+	Point m = new Point(mouseX, mouseY);
+	for(int i=0; i<formes.size(); i++){
+		if(formes.get(i).isClicked(m)){
+			foundForm = i;
+		}
+
+	}
+	return foundForm;
+}
+
 
 void mousePressed()
 {
 	switch(mae){
 		case WAIT_FOR_ORDER:
+			if (formSelected == -1){
+				formSelected = getFormClicked();
+			}
+			else{
+				int newFormClicked = getFormClicked();
+				if (newFormClicked == formSelected){
+					formes.remove(formSelected);
+					formSelected = -1;
+					break;
+				}
+				else{
+					//on fait un mouvement
+					//TODO mae MOVE
+				}
+
+			}
 			break;
+
 		case DRAW:
 			order.setPosition(new Point(mouseX,mouseY));
 			break;
