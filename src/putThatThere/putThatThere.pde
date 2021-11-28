@@ -142,6 +142,15 @@ IvyMessageListener newDrawCmd = new IvyMessageListener()
 				order = new OrderDraw(args[0],"undefined","undefined");
 				break;
 			case DRAW:
+				if(args[0].equals("CONFIRM")){
+					formes.add(order.createForme());
+					mae=FSM.WAIT_FOR_ORDER;
+					break;
+				} 
+				if(args[0].equals("YELLOW") || args[0].equals("GREEN") || args[0].equals("DARK") ||args[0].equals("BLUE") ||args[0].equals("RED") ||args[0].equals("ORANGE") ||args[0].equals("PURPLE")){
+					order.setColor(args[0]);
+					break;
+				}
 				order.setForm(args[0]);
 				break;
 			case MOVE:
