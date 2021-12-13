@@ -4,7 +4,7 @@ import java.awt.Point;
 ArrayList<Forme> formes;
 Ivy bus;
 OrderDraw order;
-float confidenceThreshold =  0.6;
+float confidenceThreshold =  0.8;
 FSM mae;
 //SRA decryption key 
 private int ACTION			= 0;
@@ -26,6 +26,12 @@ void setup()
 	formes = new ArrayList<Forme>();
 	mae = FSM.WAIT_FOR_ORDER;
 	setupIvy();
+
+	delay(1000);	
+	try {
+		bus.sendMsg("ppilot5 Say='PTDR JE SUIS LA'");	
+	} catch (Exception e) {
+	}
 	
 	
 
