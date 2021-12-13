@@ -4,7 +4,7 @@ import java.awt.Point;
 ArrayList<Forme> formes;
 Ivy bus;
 OrderDraw order;
-float confidenceThreshold =  0.8;
+float confidenceThreshold =  0.7;
 FSM mae;
 //SRA decryption key 
 private int ACTION			= 0;
@@ -16,7 +16,8 @@ private int CONFIDENCE		= 5;
 
 int formSelected = -1;
 
-
+PFont f;                           
+Point posSelected;
 
 void setup()
 {
@@ -28,11 +29,10 @@ void setup()
 	setupIvy();
 
 	delay(1000);	
-	try {
-		bus.sendMsg("ppilot5 Say='PTDR JE SUIS LA'");	
-	} catch (Exception e) {
-	}
-	
+	try {bus.sendMsg("ppilot5 Say='Hello, welcome to this multimodal drawing system. Please check that the Icar module is activated as well as sra5. For voice commands, say for example and with a french accent : Créer un triangle rouge EC. When your shape is ready, just say okay'");	} catch (Exception e) {}
+	f = createFont("Arial",16,true);
+	textFont(f,16);                 
+	fill(0);  
 	
 
 }
@@ -45,15 +45,24 @@ void draw()
 			break;
 		case DRAW:
 			displayAll();
+			text("Drawing",0,height-5);
 			if(order != null){
 				order.createPreview();
 			}
 			break;
 		case MOVE:
-			mae=FSM.WAIT_FOR_ORDER;
+			displayAll();
+      		fill(0);
+			text("Moving",0,height-5);  
+			if(formSelected != -1){
+				posSelected = formes.get(formSelected).getLocation();
+				circle((float)posSelected.getX(), (float)posSelected.getY(), 10.);
+			} 
 			break;
 		case DELETE:
-			mae=FSM.WAIT_FOR_ORDER;
+			displayAll();
+			fill(0);
+			text("Deleting",0,height-5);
 			break;
 		default :
 			mae = FSM.WAIT_FOR_ORDER;	
@@ -107,18 +116,18 @@ IvyMessageListener newVoiceCmd = new IvyMessageListener()
 					//order.debugPrint();
 					break;
 				case "MOVE":
+					try {bus.sendMsg("ppilot5 Say='To move a shape, just click on it then click on where you want to put it, you can also ask by voice. A point will tell you which shape you selected. Say quitter if you want to stop moving shapes.'");} catch (Exception e) {	}
+					formSelected = -1;
 					mae=FSM.MOVE;
 					break;
 				case "DELETE":
-					if(formSelected != -1){
-						formes.remove(formSelected);
-						formSelected = -1;
-					}
-					else{
-						mae=FSM.DELETE;
-					}
+					try {bus.sendMsg("ppilot5 Say='To delete a shape, just click on it or ask. If you want to quit, just say so.'");} catch (Exception e) {	}
+					formSelected = -1;
+					mae=FSM.DELETE;
 					break;
 				case "QUIT":
+					bus.stop();
+					bus = null;
 					exit();
 					break;
 				default:
@@ -128,7 +137,7 @@ IvyMessageListener newVoiceCmd = new IvyMessageListener()
 		
 		case DRAW:
 			if (args[ACTION].equals("QUIT"))
-				exit();
+				mae=FSM.WAIT_FOR_ORDER;
 			if (args[ACTION].equals("CONFIRM")){
 				formes.add(order.createForme());
 				mae=FSM.WAIT_FOR_ORDER;
@@ -141,8 +150,33 @@ IvyMessageListener newVoiceCmd = new IvyMessageListener()
 			break;
 		
 		case MOVE:
+			if (args[ACTION].equals("QUIT"))
+				mae=FSM.WAIT_FOR_ORDER;
+
+			if(  args[WHERE].equals("THIS") )
+				formSelected = getFormClicked();
+			
+			if( args[LOCALISATION].equals("THERE") ){
+				if(formSelected != -1){
+					formes.get(formSelected).setLocation(new Point(mouseX,mouseY));
+					formSelected = -1;
+				}
+				else{
+					try {bus.sendMsg("ppilot5 Say='You must first select a shape by clicking or asking.'");} catch (Exception e) {	}
+				}
+			}
+
 			break;
 		case DELETE:
+			if (args[ACTION].equals("QUIT"))
+				mae=FSM.WAIT_FOR_ORDER;
+			if(  args[WHERE].equals("THIS") ){
+				formSelected = getFormClicked();
+				if(formSelected!=-1){
+					formes.remove(formSelected);
+					formSelected = -1;
+				}
+			}
 			break;
 		default :
 			break;
@@ -182,7 +216,7 @@ IvyMessageListener newDrawCmd = new IvyMessageListener()
 				order.setForm(args[0]);
 				break;
 
-			case MOVE:
+			case MOVE:		
 				break;
 
 			case DELETE:
@@ -241,7 +275,7 @@ void mousePressed()
 			else{
 				formes.get(formSelected).setLocation(new Point(mouseX,mouseY));
 				formSelected = -1;
-				mae = FSM.WAIT_FOR_ORDER;
+		      	displayAll();
 			}
 			break;
 		case DELETE:
@@ -249,7 +283,7 @@ void mousePressed()
 			if(formSelected != -1){
 				formes.remove(formSelected);
 				formSelected = -1;
-				mae = FSM.WAIT_FOR_ORDER;
+				displayAll();
 			}
 			break;
 		default :
